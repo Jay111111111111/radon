@@ -1,4 +1,4 @@
-const UserModel= require("../models/userModel")
+/*const UserModel= require("../models/userModel")
 
 
 
@@ -44,4 +44,4 @@ const getUsersData= async function (req, res) {
 
 module.exports.createUser= createUser
 module.exports.getUsersData= getUsersData
-module.exports.basicCode= basicCode
+module.exports.basicCode= basicCode*/

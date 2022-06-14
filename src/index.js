@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const route = require('./routes/route.js');
+const route = require('./route/route.js');
 const { default: mongoose } = require('mongoose');
 const app = express();
 
@@ -19,13 +19,13 @@ mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzot
 app.use('/', route);
 
 app.use (
-    function (req, res, next) {
+    function (req, res,) {
         console.log ("inside GLOBAL MW");
         res.send({msg:"done"})
   }
   );
 
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log('Express app running on port ' + (process.env.PORT || 3000))
+app.listen(process.env.PORT || 4000, function () {
+    console.log('Express app running on port ' + (process.env.PORT || 4000))
 });
