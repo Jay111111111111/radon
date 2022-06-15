@@ -31,7 +31,7 @@ const loginUser = async function (req, res) {
   let token = jwt.sign(
     {
       userId: user._id.toString(),
-      batch: "thorium",
+      batch: "jay",
       organisation: "FunctionUp",
     },
     "functionup-radon"
@@ -84,7 +84,14 @@ const updateUser = async function (req, res) {
   res.send({ status: updatedUser, data: updatedUser });
 };
 
+const deletedata = async function(req, res){
+  let deldata = req.body;
+  let updateDel = await userModel.findOneAndUpdate({_id:userId},{isdeleted:true}) 
+  res.send({status: deldata, data: updateDel})
+}
+
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
+module.exports.deletedata = deletedata;
