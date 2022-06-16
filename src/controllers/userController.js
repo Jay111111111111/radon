@@ -17,7 +17,7 @@ const loginUser = async function (req, res) {
 
   let user = await userModel.findOne({ emailId: userName, password: password });
   if (!user)
-    return res.send({
+    return res.send({// run without it
       status: false,
       msg: "username or the password is not corerct",
     });
@@ -28,7 +28,7 @@ const loginUser = async function (req, res) {
   // The decision about what data to put in token depends on the business requirement
   // Input 2 is the secret
   // The same secret will be used to decode tokens
-  let token = jwt.sign(
+  let token = jwt.sign(//.verify foy checq validation
     {
       userId: user._id.toString(),
       batch: "thorium",
