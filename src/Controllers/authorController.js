@@ -1,5 +1,7 @@
 const authorModel = require("../Models/authorModel");
+const jwt = require("jsonwebtoken");
 const createAuthor = async function (req, res) {
+
   try {
     let data = req.body;
 
@@ -12,4 +14,32 @@ const createAuthor = async function (req, res) {
     res.status(500).send({ msg: "Error", error: err.message });
   }
 };
+
+
+const authorLogin = async function (req, res) {
+  let authorName = req.body.emailId;
+  let password = req.body.password;
+
+  let user = await authorModel.findOne({ emailId: authorName, password: password });
+  if (!user)
+    return res.send({// run without it
+      status: false,
+      msg: "username or the password is not corerct",
+    });
+
+
+    let token = jwt.sign(//.verify foy checq validation
+    {
+      authorId: user._id.toString(),
+      batch: "Author",
+      organisation: "FUnctionUp",
+    },
+    "functionup-thorium"
+  );
+  res.setHeader("x-auth-token", token);
+  res.send({ status: true, data: token });
+};
+
+
 module.exports.createAuthor = createAuthor;
+module.exports.authorLogin=authorLogin

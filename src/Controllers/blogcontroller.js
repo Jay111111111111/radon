@@ -1,4 +1,5 @@
 const blogModel = require("../Models/blogModel")
+const authorModel = require("../Models/authorModel")
 const moment = require('moment')
 const lodash = require('lodash')
 const mongoose = require("mongoose")
@@ -10,14 +11,25 @@ const mongoose = require("mongoose")
 const createBlogDoc = async function (req, res) {
     try {
         let blogData = req.body
-        //consol.log(blogData)
+        //console.log(blogData)
+        
+    let authorId = req.body.authorId;
+    let authorDetails = await authorModel.findById(authorId);
+    console.log(authorDetails)
+    if (!authorDetails)
+    return res.send({ status: false, msg: "No such user exists" });
+
+    res.send({ status: true, data: blogData });
+
+
+
         if (Object.keys(blogData).length != 0) {
             let savedblogData = await blogModel.create(blogData)
             res.status(201).send({ msg: savedblogData })
         }
-        else res.status(400).send({ msg: "BAD REQUEST" })
+        else{ res.status(400).send({ msg: "BAD REQUEST" })
     }
-
+    }
     catch (err) {
         console.log("This is the error :", err.message)
         res.status(500).send({ msg: "Error", error: err.message })
@@ -54,7 +66,6 @@ const blogs = async (req, res) => {
 
 
 const blogPut = async (req, res) => {
-
 
     try {
         let blog = req.body;

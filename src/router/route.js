@@ -4,6 +4,7 @@ const authorController = require("../Controllers/authorController");
 const blogController = require("../Controllers/blogcontroller");
 
 router.post("/authors", authorController.createAuthor);
+router.post("/loginauth",authorController.authorLogin);
 router.post("/blogs", blogController.createBlogDoc);
 router.get("/blogs",blogController.blogs)
 router.put("/blogPut/:blogId",blogController.blogPut);
