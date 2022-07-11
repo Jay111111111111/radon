@@ -1,6 +1,7 @@
 const bookModel = require("../Models/bookModel");
-const {isValidRequest, isValidName, isValid} = require('../Validator/userValidation')
-const {isValidId, convertToArray, isValidISBN} = require('../Validator/bookValidation')
+const reviewModel = require('../Models/reviewModel');
+const {isValidRequest, isValid} = require('../Validator/userValidation');
+const {isValidId, convertToArray, isValidISBN, isValidBookTitle} = require('../Validator/bookValidation');
 const moment = require('moment');
 const userModel = require("../Models/userModel");
 const { default: mongoose } = require("mongoose");
@@ -18,7 +19,7 @@ const createBook = async function(req, res){
 
         if(title){
             title = title.trim()
-            if(!isValidName(title)){
+            if(!isValidBookTitle(title)){
                 return res
                         .status(400)
                         .send({status:false, message:"Enter valid title"})
@@ -62,22 +63,9 @@ const createBook = async function(req, res){
          }
          book.userId = userId  
 
-        // if(ISBN == undefined ){
-        //     ISBN = Math.floor(Math.random() * 10000000000000) + 1  
-        // }
-        // const isDuplicate = await bookModel.findOne({$or:[{title:title},{ISBN:ISBN}]})
-        // if(isDuplicate){
-        //     return res
-        //     .status(400)
-        //     .send({status:false, message:"title is already in use"})
-        // }else if(isDuplicate.ISBN == ISBN){
-        //     book.title = title
-        //     ISBN = Math.floor(Math.random() * 10000000000087) + 1
-        //     book.ISBN = ISBN
-        // }
-        if(ISBN){
+        if(ISBN ){
             ISBN = ISBN.trim()
-                if(!isValidISBN(ISBN)){
+                if(!isValidISBN(ISBN) ){
                     return res
                     .status(400)
                     .send({status:false, message:"enter a valid ISBN of 10 or 13 characters"})
@@ -85,12 +73,12 @@ const createBook = async function(req, res){
         }else{
             return res
             .status(400)
-            .send({status:false, message:"ISBN is required"})
+            .send({status:false, message:"ISBN is required or try in string"})
         }
         const isDuplicate = await bookModel.findOne({$or:[{title:title},{ISBN:ISBN}]})
         if(isDuplicate){
             return res
-            .status(400)
+            .status(409)
             .send({status:false, message:"title or ISBN is already in use"})
         }
         book.title = title
@@ -168,7 +156,7 @@ const getBooks = async function(req,res){
 
         if (subcategory) {
             if (subcategory.trim().length) {
-              const subArr = subcategory.split(",").map((tag) => tag.trim());
+              const subArr = subcategory.split(",").map((sub) => sub.trim());
               bookData.subcategory = { $in: subArr };
             } else
               return res
@@ -184,7 +172,6 @@ const getBooks = async function(req,res){
                 .send({status:false, message:"No book found"})
         }
         
-
         return  res
                 .status(200)
                 .send({status:true, message:'Books list', data: bookDetails})
@@ -200,12 +187,6 @@ const getBooks = async function(req,res){
 const getBooksParticular = async function(req, res){
     try{
         let bookId = req.params.bookId
-    
-        if(!bookId){
-            return  res
-                .status(400)
-                .send({status:false, message:"give userId in params"})
-        }
         
         if(!isValidId(bookId)){
             return  res
@@ -213,15 +194,19 @@ const getBooksParticular = async function(req, res){
                 .send({status:false, message:"Enter valid format of bookId"})
         }
 
-        const book = await bookModel.findOne({_id: bookId})
+        const book = await bookModel.findOne({_id: bookId}).select({__v:0})
         if(!book){
             return  res
                 .status(404)
                 .send({status:false, message:"No such book found"})
         }
+
+        const review = await reviewModel.find({bookId: bookId}).select({_id:1, bookId:1, reviewedBy:1, reviewedAt:1, rating:1, review:1, })
+
+        book._doc["reviewsData"] = review
         return  res
                 .status(200)
-                .send({status:true, message:"Success", data: book})
+                .send({status:true, message:'Books list', data: book})
     }
     catch(error){
     console.log(error)
@@ -234,17 +219,17 @@ const getBooksParticular = async function(req, res){
 //updation of book
 const updatebook = async function(req, res){
     try{
-        // if(!isValidRequest(req.body)){
-        //     return  res
-        //     .status(400)
-        //     .send({status:false, message:"Enter a valid input"})
-        // }
+        if(!isValidRequest(req.body)){
+            return  res
+            .status(400)
+            .send({status:false, message:"Enter a valid input"})
+        }
         let {title, excerpt, releasedAt, ISBN} = req.body
         
 
         if(title != undefined){
             title = title.trim()
-            if(!isValidName(title)){
+            if(!isValidBookTitle(title)){
                 return  res
             .status(400)
             .send({status:false, message:"Enter a valid title"})
@@ -280,7 +265,7 @@ const updatebook = async function(req, res){
         const isDuplicate = await bookModel.findOne({$or:[{title:title},{ISBN:ISBN}]})
         if(isDuplicate){
             return  res
-            .status(400)
+            .status(409)
             .send({status:false, message:"title or ISBN is duplicate"})
         }
         const book = await bookModel.findOneAndUpdate({_id:req.book._id},{$set:{title:title,
@@ -316,7 +301,7 @@ const deleteBook = async function(req, res){
 
         return res
         .status(200)
-        .send({status:false, message: "Successful"})
+        .send({status:true, message: "Success"})
     }
     catch(error){
         return res
