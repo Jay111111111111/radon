@@ -17,7 +17,7 @@ const checkValue = function (value) {
   };
   
   //function for converting string into array
-  const convertToArray = function (value) {      
+  const convertToArray = function (value) {      //[   "   "     ",","","  ]
     if (typeof value == "string") {
       if(value.trim()){
       let newValue = value.trim()

@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // It is a inbuilt method in
 // mongoDb connection
 mongoose
   .connect(
-    "mongodb+srv://Manasvi29:bharat2909@cluster0.r7a9dpa.mongodb.net/group36Database?retryWrites=true&w=majority",
+    "mongodb+srv://jay123:pqwoie123@cluster0.xlqz2mn.mongodb.net/jay-DB",
     {
       useNewUrlParser: true,
     }
