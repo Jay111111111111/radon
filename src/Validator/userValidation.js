@@ -1,3 +1,4 @@
+//function for request verification
 const isValidRequest = function(value){
     if(Object.keys(value).length == 0){
         return false
@@ -28,7 +29,7 @@ const isValid = function (value) {
 //function for verifying mobile number
 const isValidPhone
  = function(phone){
-    return  /^[4,6-9]\d{9}$/.test(phone);
+    return  /^((\+91(-| )+)|0)?[6-9][0-9]{9}$/.test(phone); 
   };
 
   // function for password verification
@@ -36,6 +37,7 @@ const isValidPassword = function (pass) {
     return /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/.test(pass);
   };
 
+  //function for pincode verification
 const isValidPincode = function(pin){
     return /^[1-9][0-9]{5}$/.test(pin)
 };
