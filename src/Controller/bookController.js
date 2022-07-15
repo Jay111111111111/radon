@@ -2,6 +2,7 @@ const bookModel = require("../Models/bookModel");
 const reviewModel = require('../Models/reviewModel');
 const {isValidRequest, isValid} = require('../Validator/userValidation');
 const {isValidId, convertToArray, isValidISBN, isValidBookTitle} = require('../Validator/bookValidation');
+const {uploadFiles} = require('../upload/upload')
 const moment = require('moment');
 const userModel = require("../Models/userModel");
 const {mongoose} = require("mongoose");
@@ -16,7 +17,7 @@ const createBook = async function(req, res){
             .status(400)
             .send({status:false, message: "Enter a valid Input"})
         }
-        let {title, excerpt, userId, ISBN, category,subcategory} = req.body
+        let {title, excerpt, userId, ISBN, category,subcategory, bookCover} = req.body
         let book ={}
 
         //TITLE VALIDATION
@@ -125,7 +126,18 @@ const createBook = async function(req, res){
         
         //adding released date from code and not from body
         book.releasedAt = Date.now()
-       
+
+        if(bookCover == undefined){
+                    let files = req.files
+                    if(files && files.length>0){
+                        let uploadedFileURL = await uploadFiles(files[0])
+                        console.log(uploadedFileURL)
+                        book.bookCover = uploadedFileURL
+                    }
+                    else{
+                        res.status(400).send({message: "No file found"})
+                    }
+                }
         const newBook = await bookModel.create(book)
         return  res
                 .status(201)
@@ -144,11 +156,6 @@ const getBooks = async function(req,res){
     try{
 
     
-        if(!isValidRequest(req.query)){
-            return  res
-                .status(400)
-                .send({status:false, message:"Enter valid Input"})
-        }
         let {userId, category, subcategory} = req.query
         let bookData ={};
 
@@ -186,7 +193,8 @@ const getBooks = async function(req,res){
           //condition for displaying the book
           bookData.isDeleted = false
          //fetching the books 
-        let bookDetails = await bookModel.find(bookData).select({_id:1, title:1, excerpt:1, userId:1, category:1, releasedAt:1, reviews:1})
+        let bookDetails = await bookModel.find(bookData).select({_id:1, title:1, excerpt:1, userId:1, category:1, releasedAt:1, reviews:1}).sort({title: 1})
+        books.sort((a, b) => a.title.localeCompare(b.title))
         if(bookDetails.length == 0){
             return  res
                 .status(404)

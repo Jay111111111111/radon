@@ -1,6 +1,8 @@
 const express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require('multer');
+const {AppConfig} = require('aws-sdk');
 
 const route = require("./route/route.js");
 const app = express();
@@ -8,6 +10,7 @@ const app = express();
 app.use(bodyParser.json()); // tells the system that you want json to be used
 // app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(multer().any())
 
 // mongoDb connection
 mongoose.connect("mongodb+srv://jay123:pqwoie123@cluster0.xlqz2mn.mongodb.net/jay-DB",
