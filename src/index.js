@@ -10,9 +10,7 @@ app.use(bodyParser.json()); // tells the system that you want json to be used
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 // mongoDb connection
-mongoose
-  .connect(
-    "mongodb+srv://jay123:pqwoie123@cluster0.xlqz2mn.mongodb.net/jay-DB",
+mongoose.connect("mongodb+srv://jay123:pqwoie123@cluster0.xlqz2mn.mongodb.net/jay-DB",
     {
       useNewUrlParser: true,
     }
