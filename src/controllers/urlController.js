@@ -17,16 +17,16 @@ const createShortUrl= async function(req,res){
       //  if (!validUrl(longUrl)) return res.status(400).send({status: false, message: "Invalid long URL"})
 
         let urlCode = shortid.generate()
-        let shortUrl = baseUrl + '/' + urlCode
+        let shortUrl = baseUrl + '/' + urlCode  
         longUrl.urlCode = urlCode
         longUrl.shortUrl = shortUrl
 
-        const urlCreate = await urlModel.create(longUrl).select({ _id:0,createdAt: 0, updatedAt: 0, __v: 0 })
+        const urlCreate = await urlModel.create(longUrl)//.select({ _id:0,createdAt: 0, updatedAt: 0, __v: 0 })
        
-       return res.status(201).send({status: true, data : urlCreate })
+       return res.status(201).send({status: true, data : urlCreate })//.select({ _id:0,createdAt: 0, updatedAt: 0, __v: 0 })
     }catch (err) {
         return res.status(500).send({ status: false, error: err.message })
-    }
+    } 
 }
 
 
