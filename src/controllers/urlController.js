@@ -21,9 +21,9 @@ const createShortUrl= async function(req,res){
         longUrl.urlCode = urlCode
         longUrl.shortUrl = shortUrl
 
-        const urlCreate = await urlModel.create(longUrl)//.select({ _id:0,createdAt: 0, updatedAt: 0, __v: 0 })
+        const urlCreate = await urlModel.create(longUrl)
        
-       return res.status(201).send({status: true, data : urlCreate })//.select({ _id:0,createdAt: 0, updatedAt: 0, __v: 0 })
+       return res.status(201).send({status: true, data : {longUrl:urlCreate.longUrl,urlCode:urlCreate.urlCode,shortUrl:urlCreate.shortUrl} })
     }catch (err) {
         return res.status(500).send({ status: false, error: err.message })
     } 
@@ -33,8 +33,8 @@ const createShortUrl= async function(req,res){
 const getShortUrl = async function (req, res) {
     try { 
        
-       
-        const urlData = await urlModel.findOne({ urlCode: req.params.urlCode })  
+       const code=req.params.urlCode
+        const urlData = await urlModel.findOne({ urlCode: code })  
         if (!urlData)  
             return res.status(404).send({status: false, message: "No URL Found "});
         return res.status(307).redirect(urlData.longUrl)    
