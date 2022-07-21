@@ -17,9 +17,6 @@ redisClient.auth("3WdcphRZFG39cn3wZohzc1dpQ1OIe76c", function (err) {
 redisClient.on("connect", async function () {
     console.log("Connected to Redis..");
 });
-
-
-
 //1. connect to the server
 //2. use the commands :
 
@@ -27,6 +24,7 @@ redisClient.on("connect", async function () {
 
 const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
 const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
+
 
 const createShortUrl = async function (req, res) {
     try {
@@ -66,8 +64,7 @@ const createShortUrl = async function (req, res) {
 
 
 const getShortUrl = async function (req, res) {
-    try {
-
+    try { 
         const cachedUrlData = await GET_ASYNC(`${req.params.urlCode}`)
         const parsingData = JSON.parse(cachedUrlData);
         if (cachedUrlData) return res.status(307).redirect(parsingData)
