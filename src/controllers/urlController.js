@@ -67,14 +67,14 @@ const getShortUrl = async function (req, res) {
     try { 
         const cachedUrlData = await GET_ASYNC(`${req.params.urlCode}`)
         const parsingData = JSON.parse(cachedUrlData);
-        if (cachedUrlData) return res.status(307).redirect(parsingData)
+        if (cachedUrlData) return res.status(302).redirect(parsingData)
 
         const urlData = await urlModel.findOne({ urlCode: req.params.urlCode.trim() })
         if (!urlData)
         return res.status(404).send({ status: false, message: "No URL Found " });
 
         await SET_ASYNC(`${req.params.urlCode}`, JSON.stringify(urlData.longUrl));
-        return res.status(307).redirect(urlData.longUrl)
+        return res.status(302).redirect(urlData.longUrl)
 
     }  catch (error) {
         res.status(500).send({ status: false, error: error.message });
