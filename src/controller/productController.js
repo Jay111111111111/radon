@@ -104,7 +104,7 @@ const getProduct = async function(req,res) {
             {
                 return res.status(404).send({status : false, message : "No products found with this query"})
             }
-            return res.status(200).send({status : false, message : "Success", data : filterProduct})
+            return res.status(200).send({status : true, message : "Success", data : filterProduct})
         }
         return res.status(400).send({status:false,message:"priceSort must have 1 or -1 as input"})
     }
@@ -115,12 +115,12 @@ const getProduct = async function(req,res) {
 
         if(filterProduct.length<=0){ return res.status(404).send({status:false,message:"No products found with given query"})}
 
-        return res.status(200).send({status : false, message : "Success", data : filterProduct})
+        return res.status(200).send({status : true, message : "Success", data : filterProduct})
  }
             let findProduct = await productModel.find({isDeleted:false})
        
             if(findProduct){
-                return res.status(200).send({status : false, message : "Success", data : findProduct})
+                return res.status(200).send({status :true, message : "Success", data : findProduct})
             }
             else{
                 return res.status(404).send({status : false, message : "No products found with this query"})
