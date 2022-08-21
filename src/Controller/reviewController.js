@@ -140,7 +140,7 @@ const updateReview = async function(req, res){
             }
         }
 
-        //finding respective book
+        //finding respective book//array
         let book = await bookModel.findOne({_id: bookId, isDeleted:false})
         if(!book){
             return res
@@ -148,7 +148,7 @@ const updateReview = async function(req, res){
                 .send({status:false, message:"Book not found or is deleted"})
         }
 
-        // updating review data
+        // updating review data y=con./obj.
         const bookReview = await reviewModel.findOneAndUpdate({_id: reviewId, bookId: bookId, isDeletd:false},{$set:{review:review, rating: rating, reviewedBy:reviewedBy}},{new: true})
 
         if(!bookReview){
@@ -158,7 +158,7 @@ const updateReview = async function(req, res){
         }
        
         // displaying bookdata along with the updated review
-        book._doc["reviewsData"] = bookReview
+        book._doc["reviewsData"] = bookReview //[{},{}]
 
         return res
             .status(200)

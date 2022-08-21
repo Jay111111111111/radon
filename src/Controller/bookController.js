@@ -126,7 +126,7 @@ const createBook = async function(req, res){
         
         //adding released date from code and not from body
         book.releasedAt = Date.now()
-
+//130--if(book=req.files[0])
         if(bookCover == undefined){
                     let files = req.files
                     if(files && files.length>0){
@@ -135,14 +135,14 @@ const createBook = async function(req, res){
                         book.bookCover = uploadedFileURL
                     }
                     else{
-                        res.status(400).send({message: "No file found"})
+                        return res.status(400).send({message: "No file found"})
                     }
                 }
         const newBook = await bookModel.create(book)
         return  res
                 .status(201)
                 .send({status:true, message:"Success", data: newBook})
-    }
+    }   
     catch(error){
         console.log(error)
         return res
