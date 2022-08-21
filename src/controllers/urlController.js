@@ -42,7 +42,6 @@ const createShortUrl = async function (req, res) {
         cache = JSON.parse(cache)
         if (cache) { return res.status(200).send({ status: true, cacheData: cache }) }
 
-
         let findUrl = await urlModel.findOne({ longUrl: data.longUrl }).select({ __v: 0, updatedAt: 0, createdAt: 0, _id: 0 })
         if (findUrl) return res.status(200).send({ status: true, data: findUrl })
 
@@ -69,7 +68,8 @@ const getShortUrl = async function (req, res) {
         const parsingData = JSON.parse(cachedUrlData);
         if (cachedUrlData) return res.status(302).redirect(parsingData)
 
-        const urlData = await urlModel.findOne({ urlCode: req.params.urlCode.trim() })
+        const urlData = await urlModel.findOne({urlCode:req.params.urlCode.trim()})
+        console.log(urlData)
         if (!urlData)
         return res.status(404).send({ status: false, message: "No URL Found " });
 
